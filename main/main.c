@@ -60,6 +60,7 @@
 
 #define APP_TAG "MOTIONAUTOMATED"
 
+#define MQTT_QOS    1
 /* User Defination */
 
 #define CLK_TIMER              LEDC_TIMER_0
@@ -125,7 +126,7 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
 #define GATTS_DESCR_UUID_TEST_A     0x3333
 #define GATTS_NUM_HANDLE_TEST_A     4
 
-#define TEST_DEVICE_NAME            "MA0001" // Bluetooth Device Name
+#define TEST_DEVICE_NAME            "MA0011" // Bluetooth Device Name
 
 #define TEST_MANUFACTURER_DATA_LEN  17
 
@@ -1175,7 +1176,7 @@ void app_main(void)
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK( ret );
-
+    
     /* Button to switch the configuration mode */
 
     gpio_config_t io_conf = {};
@@ -1193,7 +1194,7 @@ void app_main(void)
     //configure GPIO with the given settings
     gpio_config(&io_conf);
 
-    readConfigFromNVS();
+   readConfigFromNVS();
 
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
 
@@ -1265,7 +1266,7 @@ void app_main(void)
             if(pub_loop == 5){
                 char pub_string[64];
                 createStringFromJson(pub_string);
-                int msg_id = esp_mqtt_client_publish(client, pub_topic, pub_string, 0, 0, 0);
+                int msg_id = esp_mqtt_client_publish(client, pub_topic, pub_string, 0, MQTT_QOS, 0);
                 ESP_LOGI(APP_TAG, "sent publish successful, msg_id=%d, data=%s", msg_id, pub_string);
                 pub_loop = 0;
             }
